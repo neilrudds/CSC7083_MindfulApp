@@ -1,5 +1,6 @@
 <?php
 
+
 // Include config file
 require_once "config.php";
 
@@ -51,6 +52,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
             'http' => array(
                 'method' => 'POST',
                 'header' => 'Content-Type: application/json',
+                'ssl' => [ 'verify_peer' => false, 'verify_peer_name' => false, 'allow_self_signed'=> true ],
                 'content' => json_encode($postData)
             )
         );
@@ -58,6 +60,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
         // Execute the request
         $context = stream_context_create($opts);
         $resource = file_get_contents($endpoint, false, $context);
+        echo $resource;
         $data = json_decode($resource);
 
         //var_dump($data);

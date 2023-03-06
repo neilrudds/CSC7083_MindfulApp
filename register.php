@@ -72,8 +72,6 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
         // Prepare POST request
         $endpoint = $link . "/api/v1/user";
 
-
-
         // The JSON body to send to the API
         $postData = array(
             'username' => $param_username,
@@ -86,10 +84,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
         $opts = array(
             'http' => array(
                 'method' => 'POST',
-                'header' => array(
-                    'Content-Type: application/json',
-                    'Authorization: Bearer '.$_SESSION["token"]
-                ),
+                'header' => 'Content-Type: application/json',
                 'content' => json_encode($postData)
             )
         );
