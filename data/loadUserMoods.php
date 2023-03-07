@@ -1,7 +1,7 @@
 <?php
 
 // Include config file
-require_once "config.php";
+require_once "../config.php";
 
 // Initialize the session
 session_start();
@@ -14,10 +14,15 @@ if (isset($_SESSION["loggedin"]) && isset($_SESSION["userid"])) {
     $endpoint = $link . "/api/v1/log/";
     $endpoint = $endpoint . $user_id;
 
-    $options = array('http' => array(
-      'method'  => 'GET',
-      'header' => 'Authorization: Bearer '.$_SESSION["token"]
-    ));
+    $options = array(
+      'http' => array(
+          'method'  => 'GET',
+          'header' => 'Authorization: Bearer '.$_SESSION["token"]
+      ),
+      'ssl' => [
+        'allow_self_signed'=> true
+      ]
+    );
 
     // Execute the request
     $context  = stream_context_create($options);
@@ -31,7 +36,7 @@ if (isset($_SESSION["loggedin"]) && isset($_SESSION["userid"])) {
         $mood_id        = $item['mood_id'];
         $mooddata       = $item['mood_description'];
         $moodhtmlcolour = $item['html_colour'];
-        $commentdata    = $item['mood_comments']; //etc
+        $moodcomment    = $item['mood_comments']; //etc
         $whendata       = $item['entry_timestamp'];
         
         $formatdate = date("l jS F Y", strtotime($whendata));
@@ -43,12 +48,14 @@ if (isset($_SESSION["loggedin"]) && isset($_SESSION["userid"])) {
         if ($diffDays === 0) {
             $moodLoggedToday = true;
         }
+
+        $commentdata = htmlspecialchars($moodcomment);
         
         echo "<div class='card' style='border-color: #$moodhtmlcolour!important'>
                 <div class='card-header' style='background-color: #$moodhtmlcolour; color: #ffffff'>$formatdate</div>
                 <div class='card-body'>
                   <h5 class='card-text'>$mooddata</h5>
-                  <p class='card-text'><small class='text-muted'>$commentdata</small></p>
+                  <p class='card-text'><small class='text-muted'>$moodcomment</small></p>
                 </div>
                 <div class='card-footer text-muted' style='text-align: right'>
                   <a href='#!' class='bi-pencil-square edit' data-id='$mood_log_id' data-comment='$commentdata' data-moodId='$mood_id' data-bs-toggle='modal' data-bs-target='#edit-modal'></a>

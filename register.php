@@ -86,7 +86,10 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
                 'method' => 'POST',
                 'header' => 'Content-Type: application/json',
                 'content' => json_encode($postData)
-            )
+            ),
+            'ssl' => [
+                'allow_self_signed'=> true
+            ]
         );
 
         // Execute the request

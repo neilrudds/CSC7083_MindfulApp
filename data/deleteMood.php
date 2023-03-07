@@ -1,7 +1,7 @@
 <?php
 
 // Include config file
-require_once "config.php";
+require_once "../config.php";
 
 //echo "<pre>";
 //print_r($_POST);
@@ -20,7 +20,10 @@ if (isset($_POST['deleteMoodLogId'])) {
         'http' => array(
             'method' => 'DELETE',
             'header' => 'Authorization: Bearer '.$_SESSION["token"]
-        )
+        ),
+        'ssl' => [
+            'allow_self_signed'=> true
+        ]
     );
 
     // Execute the request

@@ -1,7 +1,7 @@
 <?php
 
 // Include config file
-require_once "config.php";
+require_once "../config.php";
 
 // Initialize the session
 session_start();
@@ -33,7 +33,10 @@ if (isset($_SESSION["loggedin"]) && isset($_SESSION["userid"])) {
                     'Authorization: Bearer '.$_SESSION["token"]
                 ),
                 'content' => json_encode($postData)
-            )
+            ),
+            'ssl' => [
+                'allow_self_signed'=> true
+            ]
         );
 
         // Execute the request

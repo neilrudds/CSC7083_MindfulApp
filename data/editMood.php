@@ -1,7 +1,7 @@
 <?php
 
 // Include config file
-require_once "config.php";
+require_once "../config.php";
 
 if (isset($_POST['editMoodLogId'])) {
 
@@ -28,7 +28,10 @@ if (isset($_POST['editMoodLogId'])) {
                 'Authorization: Bearer '.$_SESSION["token"]
             ),
             'content' => json_encode($postData)
-        )
+        ),
+        'ssl' => [
+            'allow_self_signed'=> true
+        ]
     );
 
     // Execute the request

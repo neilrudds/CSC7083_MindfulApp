@@ -31,7 +31,7 @@ const chart = new Chart(ctx, {
 moodChart()
 
 async function getChartMoodData() {
-    const moodLogUrl = "http://localhost:3000/api/v1/log/1"
+    const moodLogUrl = "https://localhost:3000/api/v1/log/1"
   
     const response = await fetch(moodLogUrl)
     const barChartData = await response.json()

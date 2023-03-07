@@ -1,7 +1,7 @@
 function loadMoodData() {
     $.ajax({
         type: "POST",
-        url: "loadUserMoods.php",
+        url: "data/loadUserMoods.php",
         success: function(response) {
             $('#mood-data').html(response);
         },
@@ -19,7 +19,7 @@ $(document).ready(function(){
         
         $.ajax({
             type: "POST",
-            url: "saveMood.php",
+            url: "data/saveMood.php",
             cache: false,
             data: $('form#addMoodForm').serialize(),
             success: function(response){
@@ -50,7 +50,7 @@ $(document).ready(function(){
         
         $.ajax({
             type: "POST",
-            url: "editMood.php",
+            url: "data/editMood.php",
             cache: false,
             data: $('form#editMoodForm').serialize(),
             success: function(response){
@@ -78,7 +78,7 @@ $(document).ready(function(){
 
         $.ajax({
             type: "POST",
-            url: "deleteMood.php",
+            url: "data/deleteMood.php",
             data: $('form#deleteMoodForm').serialize(),
             cache: false,
             success: function(response){

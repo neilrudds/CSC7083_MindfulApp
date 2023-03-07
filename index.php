@@ -91,10 +91,15 @@ if (!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true || !isset($_
                     // Prepare GET request for mood types
                     $endpoint = $link . "/api/v1/mood/";
 
-                    $options = array('http' => array(
-                      'method'  => 'GET',
-                      'header' => 'Authorization: Bearer '.$_SESSION["token"]
-                    ));
+                    $options = array(
+                      'http' => array(
+                          'method'  => 'GET',
+                          'header' => 'Authorization: Bearer '.$_SESSION["token"]
+                      ),
+                      'ssl' => [
+                          'allow_self_signed'=> true
+                      ]
+                    );
 
                     // Execute the request
                     $context  = stream_context_create($options);
@@ -143,10 +148,15 @@ if (!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true || !isset($_
                     // Prepare GET request for mood types
                     $endpoint = $link . "/api/v1/mood/";
 
-                    $options = array('http' => array(
-                      'method'  => 'GET',
-                      'header' => 'Authorization: Bearer '.$_SESSION["token"]
-                    ));
+                    $options = array(
+                      'http' => array(
+                          'method'  => 'GET',
+                          'header' => 'Authorization: Bearer '.$_SESSION["token"]
+                      ),
+                      'ssl' => [
+                          'allow_self_signed'=> true
+                      ]
+                    );
 
                     // Execute the request
                     $context  = stream_context_create($options);
