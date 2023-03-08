@@ -2,13 +2,16 @@
 include("config.php");
 include("session.php");
 
-// Check if the user is logged in, if not then redirect him to login page
-if (!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true) {
+// Check if the user is logged in, if not then redirect to login page
+if (!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true || !isset($_SESSION["token"])) {
   header("location: login.php");
   exit;
+} else {
+  $token = $_SESSION["token"]; // Store the token in a variable to enable javascript access
+  $userId = $_SESSION["userid"]; // Store the users id
 }
 
-header('Access-Control-Allow-Origin: *');
+header('Access-Control-Allow-Headers: Accept')
 ?>
 
 <!DOCTYPE html>
@@ -20,7 +23,11 @@ header('Access-Control-Allow-Origin: *');
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <script src="https://code.jquery.com/jquery-3.6.3.js"></script>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.3/font/bootstrap-icons.css">
+    <script type="text/javascript">
+      var mySessionToken='<?php echo $token;?>';
+      var myUserId='<?php echo $userId;?>';
 
+    </script>
     <style>
       body {
         font: 14px sans-serif;
@@ -43,7 +50,7 @@ header('Access-Control-Allow-Origin: *');
       <div class="collapse navbar-collapse" id="navbarNav">
         <ul class="navbar-nav">
           <li class="nav-item">
-            <a class="nav-link active" aria-current="page" href="#">Home</a>
+            <a class="nav-link active" aria-current="page" href="index.php">Home</a>
           </li>
           <li class="nav-item">
             <a class="nav-link active" aria-current="page" href="moodSummary.php">Summary</a>

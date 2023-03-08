@@ -31,9 +31,14 @@ const chart = new Chart(ctx, {
 moodChart()
 
 async function getChartMoodData() {
-    const moodLogUrl = "https://localhost:3000/api/v1/log/1"
+
+
+  mySessionToken
+    const moodLogUrl = `https://localhost:3000/api/v1/log/${myUserId}`
   
-    const response = await fetch(moodLogUrl)
+    const response = await fetch(moodLogUrl, {
+      headers: {Authorization: `Bearer ${mySessionToken}`}
+    });
     const barChartData = await response.json()
 
     // Group moods of the same type and count occurances

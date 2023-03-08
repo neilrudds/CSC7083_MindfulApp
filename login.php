@@ -7,7 +7,7 @@ require_once "config.php";
 // Initialize the session
 session_start();
  
-// Check if the user is already logged in, if yes then redirect him to welcome page
+// Check if the user is already logged in, if yes then redirect to welcome page
 if(isset($_SESSION["loggedin"]) && $_SESSION["loggedin"] === true && isset($_SESSION["token"])){
     header("location: index.php");
     exit;
