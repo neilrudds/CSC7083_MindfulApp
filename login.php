@@ -44,7 +44,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
         // The JSON body to send to the API
         $postData = array(
             'username' => $username,
-            'password' => $password
+            'password' => base64_encode($password)
         );
 
         // Request headers combined with the JSON body
