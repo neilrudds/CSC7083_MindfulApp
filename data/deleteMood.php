@@ -7,6 +7,9 @@ require_once "../config.php";
 //print_r($_POST);
 //echo "</pre>";
 
+// Initialize the session
+session_start();
+
 if (isset($_POST['deleteMoodLogId'])) {
 
     // Set parameters

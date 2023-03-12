@@ -6,6 +6,8 @@ require_once "../config.php";
 // Initialize the session
 session_start();
 
+$_SESSION['insert_msg'] = "";
+
 if (isset($_SESSION["loggedin"]) && isset($_SESSION["userid"])) {
     
     $user_id = $_SESSION["userid"];
@@ -28,6 +30,11 @@ if (isset($_SESSION["loggedin"]) && isset($_SESSION["userid"])) {
     $context  = stream_context_create($options);
     $resource = file_get_contents($endpoint, false, $context);
     $userlogdata = json_decode($resource, true);
+
+    // Order data by date
+    usort($userlogdata, function($a, $b) {
+      return (strtotime($a['entry_timestamp']) < strtotime($b['entry_timestamp']) ? -1 : 1);
+    });
     
     $today = new DateTime("today");
     
@@ -43,7 +50,7 @@ if (isset($_SESSION["loggedin"]) && isset($_SESSION["userid"])) {
         
         // is there an entry for today
         $diff     = $today->diff(new DateTime($formatdate));
-        $diffDays = (int) $diff->format("%R%a");
+        $diffDays = (int)$diff->format("%R%a");
         
         if ($diffDays === 0) {
             $moodLoggedToday = true;
@@ -51,24 +58,29 @@ if (isset($_SESSION["loggedin"]) && isset($_SESSION["userid"])) {
 
         $commentdata = htmlspecialchars($moodcomment);
         
-        echo "<div class='card' style='border-color: #$moodhtmlcolour!important'>
-                <div class='card-header' style='background-color: #$moodhtmlcolour; color: #ffffff'>$formatdate</div>
-                <div class='card-body'>
-                  <h5 class='card-text'>$mooddata</h5>
-                  <p class='card-text'><small class='text-muted'>$moodcomment</small></p>
-                </div>
-                <div class='card-footer text-muted' style='text-align: right'>
-                  <a href='#!' class='bi-pencil-square edit' data-id='$mood_log_id' data-comment='$commentdata' data-moodId='$mood_id' data-bs-toggle='modal' data-bs-target='#edit-modal'></a>
-                  <a href='#!' class='bi-trash delete' data-id='$mood_log_id' data-bs-toggle='modal' data-bs-target='#delete-modal'></a>
-                </div>
-              </div>";  
+        echo "<div class='col'>
+          <div class='card' style='border-color: #$moodhtmlcolour!important'>
+            <div class='card-header' style='background-color: #$moodhtmlcolour; color: #ffffff'>$formatdate</div>
+            <div class='card-body'>
+              <h5 class='card-text'>$mooddata</h5>
+              <p class='card-text'><small class='text-muted'>$moodcomment</small></p>
+            </div>
+            <div class='card-footer text-muted' style='text-align: right'>
+              <a href='#!' class='bi-pencil-square edit' data-id='$mood_log_id' data-comment='$commentdata'
+                data-moodId='$mood_id' data-bs-toggle='modal' data-bs-target='#edit-modal'></a>
+              <a href='#!' class='bi-trash delete' data-id='$mood_log_id' data-bs-toggle='modal'
+                data-bs-target='#delete-modal'></a>
+            </div>
+          </div>
+        </div>";
     }
 
     // Present the add new mood modal
     if (!isset($moodLoggedToday) || $moodLoggedToday !== true){
-       echo '<script type="text/javascript">';
-       echo '$("#add-modal").modal("show")';
-       echo '</script>';
+      $_SESSION['insert_msg'] = "Please submit your mood log for today.";
+      echo '<script type="text/javascript">';
+      echo '$("#add-modal").modal("show")';
+      echo '</script>';
     }
     
 } else {

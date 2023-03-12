@@ -3,6 +3,9 @@
 // Include config file
 require_once "../config.php";
 
+// Initialize the session
+session_start();
+
 if (isset($_POST['editMoodLogId'])) {
 
     // Set parameters
