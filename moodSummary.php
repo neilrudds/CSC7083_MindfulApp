@@ -90,7 +90,8 @@ header('Access-Control-Allow-Headers: Accept')
     <!-- Mood List -->
     <div class="container">
       <h2>My Mood Summary</h2>
-      <canvas id="myChart" style="width:100%;max-width:700px"></canvas>
+      <canvas id="myPieChart" style="width:100%;max-width:700px"></canvas>
+      <canvas id="myBarChart" style="width:100%;max-width:700px"></canvas>
     </div>
 
     <footer class="footer mt-4 py-3 bg-light text-center">
