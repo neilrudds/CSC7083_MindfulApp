@@ -87,11 +87,28 @@ header('Access-Control-Allow-Headers: Accept')
       </div>
     </div>
 
-    <!-- Mood List -->
+    <!-- Mood Summary Charts -->
     <div class="container">
       <h2>My Mood Summary</h2>
-      <canvas id="myPieChart" style="width:100%;max-width:700px"></canvas>
-      <canvas id="myBarChart" style="width:100%;max-width:700px"></canvas>
+      <div class="row">
+        <div class="col">
+          <h3>Count by Mood</h3>
+          <canvas id="myPieChart" style="width:100%;max-width:700px"></canvas>
+        </div>
+        <div class="col">
+          <h3>Mood Count by Day</h3>
+          <canvas id="dayBarChart" style="width:100%;max-width:700px"></canvas>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col">
+          <h3>Mood Count by Month</h3>
+          <canvas id="mthBarChart" style="width:100%;max-width:700px"></canvas>
+        </div>
+        <div class="col">
+          <!-- Empty -->
+        </div>
+      </div>
     </div>
 
     <footer class="footer mt-4 py-3 bg-light text-center">

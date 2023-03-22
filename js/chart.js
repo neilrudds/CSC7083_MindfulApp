@@ -1,7 +1,11 @@
+const day = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+const month = ["January", "Feburary", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+
 var moodLabel = [],
-    countData = [],
-    colourHtml = [],
-    dayLabel = []
+  countData = [],
+  colourHtml = [],
+  dayDataset = [],
+  mthDataset = [];
 
 async function moodPieChart() {
   await getChartMoodData()
@@ -26,62 +30,115 @@ async function moodPieChart() {
     options: {
       tooltips: {
         mode: 'index'
-      }
+      },
+      legend: {
+        position: 'left'
+      },
     }
   })
 }
 moodPieChart()
 
-async function moodBarChart() {
+async function dailyMoodBarChart() {
   await getChartMoodData()
 
-  const ctx = document.getElementById('myBarChart').getContext('2d');
+  const ctx = document.getElementById('dayBarChart').getContext('2d');
 
   const chart = new Chart(ctx, {
     // The type of chart we want to create
     type: 'bar',
-
-    // The data for our dataset
     data: {
-      labels: moodLabel,
-      datasets: [{
-        label: 'Mood Count',
-        backgroundColor: colourHtml,
-        data: countData
-      }]
+      labels: day,
+      datasets: dayDataset,
     },
-
-    // Configuration options go here
     options: {
+      tooltips: {
+        displayColors: true,
+        callbacks: {
+          mode: 'x',
+        },
+      },
       scales: {
-          yAxes: [{
-              ticks: {
-                  beginAtZero: true
-              }
-          }]
-      }
+        xAxes: [{
+          stacked: true,
+          gridLines: {
+            display: false,
+          }
+        }],
+        yAxes: [{
+          stacked: true,
+          ticks: {
+            beginAtZero: true,
+          },
+          type: 'linear',
+        }]
+      },
+      responsive: true,
+      legend: {
+        position: 'bottom'
+      },
     }
   })
 }
-moodBarChart()
+dailyMoodBarChart()
+
+async function monthlyMoodBarChart() {
+  await getChartMoodData()
+
+  const ctx = document.getElementById('mthBarChart').getContext('2d');
+
+  const chart = new Chart(ctx, {
+    // The type of chart we want to create
+    type: 'bar',
+    data: {
+      labels: month,
+      datasets: mthDataset,
+    },
+    options: {
+      tooltips: {
+        displayColors: true,
+        callbacks: {
+          mode: 'x',
+        },
+      },
+      scales: {
+        xAxes: [{
+          stacked: true,
+          gridLines: {
+            display: false,
+          }
+        }],
+        yAxes: [{
+          stacked: true,
+          ticks: {
+            beginAtZero: true,
+          },
+          type: 'linear',
+        }]
+      },
+      responsive: true,
+      legend: {
+        position: 'bottom'
+      },
+    }
+  })
+}
+monthlyMoodBarChart()
 
 function getColourByMoodname(obj, mood_description) {
   // iterate over each element in the array
-  for (var i = 0; i < obj.length; i++){
+  for (var i = 0; i < obj.length; i++) {
     // look for the entry with a matching `mood_name` value
-    if (obj[i].mood_description == mood_description){
+    if (obj[i].mood_description == mood_description) {
       return obj[i].html_colour
     }
-  } 
+  }
 }
 
-function getExtractMonth(obj) {
-  // iterate over each element in the array
-  for (var i = 0; i < obj.length; i++){
-    const d = new Date(obj[i].entry_timestamp);
-    let name = d.getMonth();
-    console.log(name);
-  } 
+function checkLabel(array, label) {
+  return array.some(function (obj) {
+    return obj.label === label;
+  });
 }
 
 async function getChartMoodData() {
@@ -106,40 +163,57 @@ async function getChartMoodData() {
     return p;
   }, {});
 
-  console.log(counts)
-
-  // Test group by month, then sub-group by mood_description
-  function GroupByMonth(array, property) {
-    return array.reduce((acc, obj) => {
-      let key = new Date(obj[property]).getMonth();
-      acc[key] = acc[key] || [];
-      acc[key].push(obj);
-      return acc;
-    }, {});
-  }
-
-  var map = {}; barChartData.forEach(function(val){
+  // day data
+  var d_map = {};
+  barChartData.forEach(function (val) {
     const d = new Date(val.entry_timestamp);
-    let day = d.getMonth();
-    map[day] = map[day] || {};
-    map[day][val.mood_description] = map[day][val.mood_description] || 0;
-    map[day][val.mood_description]++;
+    let day = d.getDay();
+    d_map[day] = d_map[day] || {};
+    d_map[day][val.mood_description] = d_map[day][val.mood_description] || 0;
+    d_map[day][val.mood_description]++;
   });
 
-  var output = Object.keys(map).map(function(key){
-    var tmpArr = [];
-    for(var mood_description in map[key])
-    {
-       tmpArr.push( [ mood_description, map[key][mood_description] ] )
+  var dayArr = [];
+  const daily = Object.keys(d_map).map(k => {
+    for (var mood_description in d_map[k]) {
+      if (!checkLabel(dayArr, mood_description)) {
+        dayArr.push({
+          label: mood_description,
+          backgroundColor: '#' + getColourByMoodname(barChartData, mood_description) + '80',
+          data: Array(7).fill(0)
+        })
+      }
+      //Find index of specific object using findIndex method.    
+      objIndex = dayArr.findIndex((obj => obj.label == mood_description))
+      dayArr[objIndex].data[k] = d_map[k][mood_description];
     }
-    return { day : key, mood: tmpArr  };
-  })
+  });
 
-  console.log(output);
+  // month data
+  var m_map = {};
+  barChartData.forEach(function (val) {
+    const m = new Date(val.entry_timestamp);
+    let mth = m.getMonth();
+    m_map[mth] = d_map[mth] || {};
+    m_map[mth][val.mood_description] = m_map[mth][val.mood_description] || 0;
+    m_map[mth][val.mood_description]++;
+  });
 
-  const labels_day = output.map((x) => x.day)
-  dayLabel = labels_day
-  console.log(labels_day);
+  var mthArr = [];
+  const mthly = Object.keys(m_map).map(k => {
+    for (var mood_description in m_map[k]) {
+      if (!checkLabel(mthArr, mood_description)) {
+        mthArr.push({
+          label: mood_description,
+          backgroundColor: '#' + getColourByMoodname(barChartData, mood_description) + '80',
+          data: Array(12).fill(0)
+        })
+      }
+      //Find index of specific object using findIndex method.    
+      objIndex = mthArr.findIndex((obj => obj.label == mood_description))
+      mthArr[objIndex].data[k] = m_map[k][mood_description];
+    }
+  });
 
   // Reformat the grouped data and add in the relevant html colours
   var countsExtended = Object.keys(counts).map(k => {
@@ -150,8 +224,6 @@ async function getChartMoodData() {
     };
   });
 
-  console.log(countsExtended);
-
   // Map to arrays for chart.js
   const labels = countsExtended.map((x) => x.name)
   const data = countsExtended.map((x) => x.count)
@@ -160,4 +232,6 @@ async function getChartMoodData() {
   moodLabel = labels
   countData = data
   colourHtml = colour
+  dayDataset = dayArr
+  mthDataset = mthArr
 }
