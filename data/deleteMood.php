@@ -1,7 +1,7 @@
 <?php
 
 // Include config file
-require_once "../config.php";
+require_once "../config/config.php";
 
 //echo "<pre>";
 //print_r($_POST);

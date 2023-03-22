@@ -1,5 +1,5 @@
 <?php
-include("config.php");
+include("config/config.php");
 include("session.php");
 
 if(isset($_GET['logout'])) {
@@ -78,7 +78,7 @@ if (!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true || !isset($_
     </nav>
 
     <div class="p-5 mb-4 bg-light bg-image rounded-3"
-      style="background-image: url('media/mental_health_banner.jpeg'); height: 250;">
+      style="background-image: url('assets/mental_health_banner.jpeg'); height: 250;">
       <div class="container-fluid py-5">
         <h1 class="display-5 fw-bold">
           Welcome <?php echo htmlspecialchars($_SESSION["username"]); ?> to Mindful

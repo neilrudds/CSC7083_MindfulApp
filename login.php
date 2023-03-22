@@ -1,7 +1,7 @@
 <?php
 
 // Include config file
-require_once "config.php";
+require_once "config/config.php";
 
 // Initialize the session
 session_start();
@@ -168,7 +168,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
         }        
         ?>
         <form action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>" method="post">
-            <img class="mb-4" src="media/mindful_logo.jpg" alt="" width="72" height="57">
+            <img class="mb-4" src="assets/mindful_logo.jpg" alt="" width="72" height="57">
             <h1 class="h3 mb-3 fw-normal">Please sign in</h1>
             <div class="form-floating">
                 <input type="text" id="username" name="username" placeholder="Username"

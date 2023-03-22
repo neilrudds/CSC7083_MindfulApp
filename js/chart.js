@@ -1,6 +1,7 @@
 var moodLabel = [],
     countData = [],
-    colourHtml = []
+    colourHtml = [],
+    dayLabel = []
 
 async function moodPieChart() {
   await getChartMoodData()
@@ -52,13 +53,13 @@ async function moodBarChart() {
 
     // Configuration options go here
     options: {
-      options: {
-        scales: {
-          y: {
-            beginAtZero: true
-          }
-        }
-      },
+      scales: {
+          yAxes: [{
+              ticks: {
+                  beginAtZero: true
+              }
+          }]
+      }
     }
   })
 }
@@ -71,6 +72,15 @@ function getColourByMoodname(obj, mood_description) {
     if (obj[i].mood_description == mood_description){
       return obj[i].html_colour
     }
+  } 
+}
+
+function getExtractMonth(obj) {
+  // iterate over each element in the array
+  for (var i = 0; i < obj.length; i++){
+    const d = new Date(obj[i].entry_timestamp);
+    let name = d.getMonth();
+    console.log(name);
   } 
 }
 
@@ -97,6 +107,39 @@ async function getChartMoodData() {
   }, {});
 
   console.log(counts)
+
+  // Test group by month, then sub-group by mood_description
+  function GroupByMonth(array, property) {
+    return array.reduce((acc, obj) => {
+      let key = new Date(obj[property]).getMonth();
+      acc[key] = acc[key] || [];
+      acc[key].push(obj);
+      return acc;
+    }, {});
+  }
+
+  var map = {}; barChartData.forEach(function(val){
+    const d = new Date(val.entry_timestamp);
+    let day = d.getMonth();
+    map[day] = map[day] || {};
+    map[day][val.mood_description] = map[day][val.mood_description] || 0;
+    map[day][val.mood_description]++;
+  });
+
+  var output = Object.keys(map).map(function(key){
+    var tmpArr = [];
+    for(var mood_description in map[key])
+    {
+       tmpArr.push( [ mood_description, map[key][mood_description] ] )
+    }
+    return { day : key, mood: tmpArr  };
+  })
+
+  console.log(output);
+
+  const labels_day = output.map((x) => x.day)
+  dayLabel = labels_day
+  console.log(labels_day);
 
   // Reformat the grouped data and add in the relevant html colours
   var countsExtended = Object.keys(counts).map(k => {
