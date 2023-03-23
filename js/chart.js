@@ -34,6 +34,7 @@ async function moodPieChart() {
       legend: {
         position: 'left'
       },
+      responsive: true
     }
   })
 }

@@ -1,7 +1,7 @@
 <?php
 
 // Include config file
-require_once "data/config.php";
+require_once "config/config.php";
 
 // Define variables and initialize with empty values
 $username = $email = $password = $confirm_password = "";
@@ -22,8 +22,18 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
         $username = trim($_POST["username"]);
         $endpoint = $endpoint . $username;
 
+        $options = array(
+            'http' => array(
+                'method'  => 'GET'
+            ),
+            'ssl' => [
+              'allow_self_signed'=> true
+            ]
+        );
+
         // Execute the request
-        $resource = file_get_contents($endpoint);
+        $context  = stream_context_create($options);
+        $resource = file_get_contents($endpoint, false, $context);
         $data = json_decode($resource, true);
 
         // Attempt to execute the prepared statement
@@ -35,9 +45,9 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
 
     // Validate email
     if (empty(trim($_POST["email"]))) {
-        $password_err = "Please enter an email.";
+        $email_err = "Please enter an email.";
     } elseif (!filter_var(trim($_POST["email"]), FILTER_VALIDATE_EMAIL)) {
-        $username_err = "Email must be of a valid email address format.";
+        $email_err = "Email must be of a valid email address format.";
     } else {
         $email = trim($_POST["email"]);
     }
@@ -47,6 +57,14 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
         $password_err = "Please enter a password.";
     } elseif (strlen(trim($_POST["password"])) < 6) {
         $password_err = "Password must have at least 6 characters.";
+    } elseif(!preg_match("#[0-9]+#", trim($_POST["password"]))) {
+        $password_err = "Your Password Must Contain At Least 1 Number!";
+    }
+    elseif(!preg_match("#[A-Z]+#", trim($_POST["password"]))) {
+        $password_err = "Your Password Must Contain At Least 1 Capital Letter!";
+    }
+    elseif(!preg_match("#[a-z]+#", trim($_POST["password"]))) {
+        $password_err = "Your Password Must Contain At Least 1 Lowercase Letter!";
     } else {
         $password = trim($_POST["password"]);
     }

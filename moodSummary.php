@@ -52,10 +52,6 @@ header('Access-Control-Allow-Headers: Accept')
             <li class="nav-item">
               <a class="nav-link active" aria-current="page" href="moodSummary.php">Summary</a>
             </li>
-            <li class="nav-item">
-              <a class="nav-link" aria-current="page" data-bs-toggle="modal" data-bs-target="#add-modal" href="#">Record
-                New Mood Log</a>
-            </li>
           </ul>
           <div>
             <li class="nav-item dropdown">
@@ -93,81 +89,26 @@ header('Access-Control-Allow-Headers: Accept')
       <div class="row">
         <div class="col">
           <h3>Count by Mood</h3>
-          <canvas id="myPieChart" style="width:100%;max-width:700px"></canvas>
+          <div class="wrapper">
+              <canvas id="myPieChart" width="600" height="500"></canvas>
+          </div>
         </div>
         <div class="col">
           <h3>Mood Count by Day</h3>
-          <canvas id="dayBarChart" style="width:100%;max-width:700px"></canvas>
+          <div class="wrapper">
+              <canvas id="dayBarChart" width="600" height="500"></canvas>
+          </div>
         </div>
       </div>
       <div class="row">
         <div class="col">
           <h3>Mood Count by Month</h3>
-          <canvas id="mthBarChart" style="width:100%;max-width:700px"></canvas>
+          <div class="wrapper">
+              <canvas id="mthBarChart" width="600" height="500"></canvas>
+          </div>
         </div>
         <div class="col">
           <!-- Empty -->
-        </div>
-      </div>
-    </div>
-
-    <!-- Insert Modal -->
-    <div id="add-modal" class="modal fade" role="dialog">
-      <div class="modal-dialog">
-        <div class="modal-content">
-          <div class="modal-header">
-            <h5 class="modal-title" id="exampleModalLabel">Add a new mood entry</h5>
-            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-          </div>
-          <form id="addMoodForm" name="add-mood" role="form">
-            <div class="modal-body">
-            <?php 
-            if(!empty($_SESSION['insert_msg'])){
-                echo '<div class="alert alert-primary">' . $_SESSION['insert_msg'] . '</div>';
-            }        
-            ?>
-              <div class="mb-3">
-                <label for="mood" class="form-label">Current mood:</label>
-                <select class="form-select form-select-lg mb-3" name="mood" aria-label=".form-select-lg example">
-                  <option selected>Please select a mood</option>
-                  <?php
-                        // Prepare GET request for mood types
-                        $endpoint = $link . "/api/v1/mood/";
-
-                        $options = array(
-                          'http' => array(
-                              'method'  => 'GET',
-                              'header' => 'Authorization: Bearer '.$_SESSION["token"]
-                          ),
-                          'ssl' => [
-                              'allow_self_signed'=> true
-                          ]
-                        );
-
-                        // Execute the request
-                        $context  = stream_context_create($options);
-                        $resource = file_get_contents($endpoint, false, $context);
-                        $mooddata = json_decode($resource, true);
-
-                        foreach ($mooddata as $item) { //foreach element in $arr
-                          $moodid = $item['mood_id'];
-                          $mooddescription = $item['description'];
-
-                          echo "<option value='$moodid'>$mooddescription</option>";
-                        }
-                      ?>
-                </select>
-              </div>
-              <div class="mb-3">
-                <label for="formComment" class="form-label">Trigger comments:</label>
-                <textarea class="form-control" name="comment" id="formComment" rows="3"></textarea>
-              </div>
-            </div>
-            <div class="modal-footer">
-              <button type="button" class="btn btn-default" data-bs-dismiss="modal">Close</button>
-              <input type="submit" class="btn btn-success" id="submit" value="Save">
-            </div>
-          </form>
         </div>
       </div>
     </div>
