@@ -6,6 +6,7 @@ require_once "../config/config.php";
 // Initialize the session
 session_start();
 
+// If the mood is set in the POST request
 if (isset($_SESSION["loggedin"]) && isset($_SESSION["userid"])) {
     if (isset($_POST['mood'])) {
 

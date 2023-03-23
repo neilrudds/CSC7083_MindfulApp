@@ -1,11 +1,11 @@
 <?php
-/* API Server */
+// API Server
 define('API_HOST', 'https://localhost:3000');
 
 $link = API_HOST;
 
 // Check connection
 if(is_null($link)) {
-    die("ERROR: API Server not defined.");
+    exit("ERROR: API Server not defined.");
 }
 ?>

@@ -143,7 +143,6 @@ function checkLabel(array, label) {
 
 async function getChartMoodData() {
 
-  mySessionToken
   const moodLogUrl = `https://localhost:3000/api/v1/log/${myUserId}`
 
   const response = await fetch(moodLogUrl, {

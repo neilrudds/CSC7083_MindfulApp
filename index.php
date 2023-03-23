@@ -65,7 +65,7 @@ if (!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true || !isset($_
                 Hello, <?php echo htmlspecialchars($_SESSION["username"]); ?>
               </a>
               <ul class="dropdown-menu dropdown-menu-end">
-                <li><a class="dropdown-item" href="#">Manage Account</a></li>
+                <li><a class="dropdown-item" href="account.php">Manage Account</a></li>
                 <li>
                   <hr class="dropdown-divider">
                 </li>
@@ -100,7 +100,7 @@ if (!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true || !isset($_
             data-bs-target="#add-modal">Record New Mood Log</button>
         </div>
       </div>
-      <div class="row row-cols-1 row-cols-md-3 g-4" id="mood-data">
+      <div id="mood-data" class="row row-cols-1 row-cols-md-3 g-4">
       </div>
     </div>
 

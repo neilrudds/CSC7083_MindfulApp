@@ -6,6 +6,7 @@ require_once "../config/config.php";
 // Initialize the session
 session_start();
 
+// If the user hasn't created a mood log for today, we will inform them in the add new mood modal.
 $_SESSION['insert_msg'] = "";
 
 if (isset($_SESSION["loggedin"]) && isset($_SESSION["userid"])) {

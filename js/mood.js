@@ -1,3 +1,4 @@
+// Update the mood-data div the the users moods
 function loadMoodData() {
     $.ajax({
         type: "POST",
@@ -11,8 +12,10 @@ function loadMoodData() {
     });
 }
 
+// When the page loads
 $(document).ready(function () {
 
+    // When the user submits a new mood
     $("#addMoodForm").submit(function (e) {
 
         e.preventDefault(); // avoid to execute the actual submit of the form.
@@ -34,6 +37,7 @@ $(document).ready(function () {
 
     });
 
+    // When the user clicks the mood edit button
     $(document).on("click", ".edit", function (e) {
 
         e.preventDefault(); // avoid to execute the actual submit of the form.
@@ -44,6 +48,7 @@ $(document).ready(function () {
         $("#editMood").val($(this).attr("data-moodid"));
     });
 
+    // When the user submits the edit request
     $("#editMoodForm").submit(function (e) {
 
         e.preventDefault(); // avoid to execute the actual submit of the form.
@@ -65,11 +70,13 @@ $(document).ready(function () {
 
     });
 
+    // When the user clicks on the mood delete button
     $(document).on("click", ".delete", function (e) {
         e.preventDefault(); // avoid to execute the actual submit of the form.
         $("#deleteMoodLogId").val($(this).data("id"));
     });
 
+    // When the user submits the delete request
     $("#deleteMoodForm").submit(function (e) {
 
         e.preventDefault(); // avoid to execute the actual submit of the form.

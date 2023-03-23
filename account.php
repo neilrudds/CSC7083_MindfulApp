@@ -1,17 +1,13 @@
 <?php
-include("data/config.php");
+include("config/config.php");
 include("session.php");
 
 // Check if the user is logged in, if not then redirect to login page
 if (!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true || !isset($_SESSION["token"])) {
   header("location: login.php");
   exit;
-} else {
-  $token = $_SESSION["token"]; // Store the token in a variable to enable javascript access
-  $userId = $_SESSION["userid"]; // Store the users id
 }
 
-header('Access-Control-Allow-Headers: Accept')
 ?>
 
 <!DOCTYPE html>
@@ -20,7 +16,7 @@ header('Access-Control-Allow-Headers: Accept')
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Mindful | Summary</title>
+  <title>Mindful | Manage Account</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet"
     integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD" crossorigin="anonymous">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.3/font/bootstrap-icons.css">
@@ -29,14 +25,11 @@ header('Access-Control-Allow-Headers: Accept')
       list-style-type: none;
     }
   </style>
-  <script type="text/javascript">
-    var mySessionToken = '<?php echo $token;?>';
-    var myUserId = '<?php echo $userId;?>';
-  </script>
 </head>
 
 <body>
   <main>
+
     <nav class="navbar navbar-expand-lg bg-body-tertiary">
       <div class="container-fluid">
         <a class="navbar-brand" href="#">Mindful</a>
@@ -51,10 +44,6 @@ header('Access-Control-Allow-Headers: Accept')
             </li>
             <li class="nav-item">
               <a class="nav-link active" aria-current="page" href="moodSummary.php">Summary</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" aria-current="page" data-bs-toggle="modal" data-bs-target="#add-modal" href="#">Record
-                New Mood Log</a>
             </li>
           </ul>
           <div>
@@ -87,85 +76,42 @@ header('Access-Control-Allow-Headers: Accept')
       </div>
     </div>
 
-    <!-- Mood Summary Charts -->
+    <!-- Mood List -->
     <div class="container">
-      <h2>My Mood Summary</h2>
-      <div class="row">
-        <div class="col">
-          <h3>Count by Mood</h3>
-          <canvas id="myPieChart" style="width:100%;max-width:700px"></canvas>
-        </div>
-        <div class="col">
-          <h3>Mood Count by Day</h3>
-          <canvas id="dayBarChart" style="width:100%;max-width:700px"></canvas>
+      <div class="row align-items-start">
+        <div class="col text-start">
+          <h2>Account Management</h2>
+          <br>
         </div>
       </div>
-      <div class="row">
-        <div class="col">
-          <h3>Mood Count by Month</h3>
-          <canvas id="mthBarChart" style="width:100%;max-width:700px"></canvas>
-        </div>
-        <div class="col">
-          <!-- Empty -->
+      <div class="d-flex justify-content-center">
+        <div>
+        <br>
+          <button type="button" class="btn btn-outline-danger" data-bs-toggle="modal"
+                data-bs-target="#delete-modal">Delete Account</button>
+          <br>
+          <br>
         </div>
       </div>
     </div>
 
-    <!-- Insert Modal -->
-    <div id="add-modal" class="modal fade" role="dialog">
+    <!-- Delete Account -->
+    <div id="delete-modal" class="modal fade" role="dialog">
       <div class="modal-dialog">
         <div class="modal-content">
           <div class="modal-header">
-            <h5 class="modal-title" id="exampleModalLabel">Add a new mood entry</h5>
+            <h5 class="modal-title">Delete Account</h5>
             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
           </div>
-          <form id="addMoodForm" name="add-mood" role="form">
+          <form id="deleteAccountForm" name="delete-account" role="form" method="post">
             <div class="modal-body">
-            <?php 
-            if(!empty($_SESSION['insert_msg'])){
-                echo '<div class="alert alert-primary">' . $_SESSION['insert_msg'] . '</div>';
-            }        
-            ?>
               <div class="mb-3">
-                <label for="mood" class="form-label">Current mood:</label>
-                <select class="form-select form-select-lg mb-3" name="mood" aria-label=".form-select-lg example">
-                  <option selected>Please select a mood</option>
-                  <?php
-                        // Prepare GET request for mood types
-                        $endpoint = $link . "/api/v1/mood/";
-
-                        $options = array(
-                          'http' => array(
-                              'method'  => 'GET',
-                              'header' => 'Authorization: Bearer '.$_SESSION["token"]
-                          ),
-                          'ssl' => [
-                              'allow_self_signed'=> true
-                          ]
-                        );
-
-                        // Execute the request
-                        $context  = stream_context_create($options);
-                        $resource = file_get_contents($endpoint, false, $context);
-                        $mooddata = json_decode($resource, true);
-
-                        foreach ($mooddata as $item) { //foreach element in $arr
-                          $moodid = $item['mood_id'];
-                          $mooddescription = $item['description'];
-
-                          echo "<option value='$moodid'>$mooddescription</option>";
-                        }
-                      ?>
-                </select>
-              </div>
-              <div class="mb-3">
-                <label for="formComment" class="form-label">Trigger comments:</label>
-                <textarea class="form-control" name="comment" id="formComment" rows="3"></textarea>
+                Are you sure you want to permanently delete your account? This cannot be undone!
               </div>
             </div>
             <div class="modal-footer">
               <button type="button" class="btn btn-default" data-bs-dismiss="modal">Close</button>
-              <input type="submit" class="btn btn-success" id="submit" value="Save">
+              <input type="submit" class="btn btn-danger" id="submit" value="Delete">
             </div>
           </form>
         </div>
@@ -189,9 +135,27 @@ header('Access-Control-Allow-Headers: Accept')
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.min.js"
     integrity="sha384-mQ93GR66B00ZXjt0YO5KlohRA5SY2XofN4zfuZxLkoj1gXtW8ANNCe9d5Y3eG5eD" crossorigin="anonymous">
   </script>
-  <script type="text/javascript" src="js/mood.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js"></script>
-  <script src="js/chart.js"></script>
-</body>
+  <script>
+  $(document).ready(function () {
+    // When the user submits the delete request
+    $("#deleteAccountForm").submit(function (e) {
 
+        e.preventDefault(); // avoid to execute the actual submit of the form.
+
+        $.ajax({
+            type: "POST",
+            url: "data/deleteAccount.php",
+            data: $('form#deleteAccountForm').serialize(),
+            cache: false,
+            success: function (response) {
+              window.location.href = 'index.php?logout';
+            },
+            error: function (response) {
+                alert(response); // show response from the php script.
+            }
+        });
+    });
+  });
+  </script>
+</body>
 </html>
